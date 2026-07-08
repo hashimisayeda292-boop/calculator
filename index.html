@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Mode Graphing Calculator - Split Screen</title>
+    <title>Desmos Dark Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <style>
         body {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #0a0a0a;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 10px;
-            box-sizing: border-box;
             overflow: hidden;
         }
 
@@ -51,246 +50,176 @@
             visibility: hidden;
         }
 
-        /* Desmos Side-by-Side Split Container */
-        .calculator-container {
+        /* Main Workspace Split Layout Like Desmos */
+        .workspace {
             display: flex;
-            flex-direction: row; /* Puts controls on left, graph on right */
-            background-color: #141414;
-            border-radius: 15px;
-            box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.7);
-            border: 1px solid #2d2d2d;
-            width: 95vw;
-            max-width: 900px;
-            height: 500px;
-            overflow: hidden;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            flex: 1;
+            height: 100%;
+            width: 100%;
         }
 
-        .container-visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Left Side Control Panel (Typing & Buttons) */
-        .control-panel {
-            width: 40%;
-            min-width: 320px;
-            padding: 20px;
+        /* Left Side Bar for Inputs */
+        .sidebar {
+            width: 350px;
+            background-color: #111111;
+            border-right: 1px solid #2d2d2d;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #2d2d2d;
+            padding: 15px;
             box-sizing: border-box;
+            z-index: 10;
         }
 
-        /* Right Side Graph Viewport */
-        .graph-panel {
-            width: 60%;
-            height: 100%;
-            position: relative;
-        }
-
-        #graphCanvas {
-            background-color: #000000;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Display Wrapper */
-        .display-wrapper {
-            position: relative;
-            width: 100%;
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 15px;
         }
 
-        #display {
-            width: 100%;
-            height: 60px;
-            background-color: #111;
-            border: 1px solid #444;
-            color: #ffffff; 
-            text-align: right;
-            font-size: 24px;
-            padding: 5px 15px;
-            box-sizing: border-box;
+        .input-row {
+            display: flex;
+            align-items: center;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
             border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            position: relative;
-            z-index: 2;
+            padding: 10px;
+            margin-bottom: 15px;
         }
 
-        /* Watermark Logo */
-        .nike-logo-overlay {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
+        .expression-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #388bfd; /* Desmos blue line indicator */
+            margin-right: 12px;
         }
 
-        .nike-logo-overlay svg {
-            fill: rgba(255, 255, 255, 0.25);
-            width: 65px;
-            height: auto;
-        }
-
-        .hidden {
-            opacity: 0 !important;
-        }
-
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            flex-grow: 1;
-        }
-
-        button {
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
+        #equation-input {
+            flex: 1;
+            background: none;
             border: none;
-            border-radius: 8px;
-            background-color: #262626;
-            color: white;
-            transition: background 0.2s, transform 0.1s;
+            color: #ffffff;
+            font-size: 18px;
+            font-family: 'Courier New', Courier, monospace;
+            outline: none;
         }
 
-        button:hover {
-            background-color: #3a3a3a;
+        #equation-input::placeholder {
+            color: #555;
         }
 
-        button:active {
-            transform: scale(0.95);
+        /* Right Side Graph Area */
+        .graph-area {
+            flex: 1;
+            position: relative;
+            background-color: #050505;
         }
 
-        button.graph-btn {
-            background-color: #333;
-            border: 1px solid #555;
-        }
-        button.graph-btn:hover {
-            background-color: #444;
+        #graphCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
-        button.operator {
-            background-color: #ffffff;
-            color: black;
-        }
-        button.operator:hover {
-            background-color: #dddddd;
-        }
-
-        button.clear {
-            background-color: #b32424;
-        }
-        button.clear:hover {
-            background-color: #d93636;
+        /* Coordinates guide tooltip */
+        .info-overlay {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #aaa;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<!-- Splash Loader Screen -->
 <div id="splash-screen">
     <svg class="splash-logo" viewBox="0 0 24 24">
         <path d="M21,6.5c-0.3,0.3-4.1,3.4-8.8,5.9C7.4,14.9,3.1,16,1.9,15.6c-0.2,0-0.3-0.2-0.1-0.4c0.5-0.6,3.6-4.1,8.9-7.3 c4.4-2.7,8.8-4,10.1-3.6C21.1,4.5,21.3,6.2,21,6.5z"/>
     </svg>
 </div>
 
-<!-- Desmos Styled Horizon Split App Box -->
-<div class="calculator-container" id="mainContainer">
+<div class="workspace">
     
-    <!-- LEFT SIDE: Typing Inputs and Number Layout Pad -->
-    <div class="control-panel">
-        <div class="display-wrapper">
-            <div class="nike-logo-overlay" id="nikeLogo">
-                <svg viewBox="0 0 24 24">
-                    <path d="M21,6.5c-0.3,0.3-4.1,3.4-8.8,5.9C7.4,14.9,3.1,16,1.9,15.6c-0.2,0-0.3-0.2-0.1-0.4c0.5-0.6,3.6-4.1,8.9-7.3 c4.4-2.7,8.8-4,10.1-3.6C21.1,4.5,21.3,6.2,21,6.5z"/>
-                </svg>
-            </div>
-            <input type="text" id="display" placeholder="" oninput="checkLogo()">
+    <div class="sidebar">
+        <div class="sidebar-title">Expressions</div>
+        
+        <div class="input-row">
+            <div class="expression-color"></div>
+            <input type="text" id="equation-input" placeholder="e.g., x^2 or 2*x + 3" autocomplete="off" autofocus>
         </div>
         
-        <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button class="graph-btn" onclick="appendValue('x')">x</button>
-            <button class="graph-btn" onclick="plotGraph()">PLOT</button>
-            <button class="operator" onclick="appendValue('/')">/</button>
-            
-            <button onclick="appendValue('7')">7</button>
-            <button onclick="appendValue('8')">8</button>
-            <button onclick="appendValue('9')">9</button>
-            <button class="operator" onclick="appendValue('*')">*</button>
-            
-            <button onclick="appendValue('4')">4</button>
-            <button onclick="appendValue('5')">5</button>
-            <button onclick="appendValue('6')">6</button>
-            <button class="operator" onclick="appendValue('-')">-</button>
-            
-            <button onclick="appendValue('1')">1</button>
-            <button onclick="appendValue('2')">2</button>
-            <button onclick="appendValue('3')">3</button>
-            <button class="operator" onclick="appendValue('+')">+</button>
-            
-            <button onclick="appendValue('0')" style="grid-column: span 2;">0</button>
-            <button onclick="appendValue('.')">.</button>
-            <button class="operator" onclick="calculate()">=</button>
-        </div>
+        <p style="font-size: 12px; color: #555; line-height: 1.5;">
+            Type any mathematical expression using <b>x</b>. The graph will update instantly as you type! No button clicking required.
+        </p>
     </div>
 
-    <!-- RIGHT SIDE: The Graphing Board Viewport -->
-    <div class="graph-panel">
+    <div class="graph-area">
         <canvas id="graphCanvas"></canvas>
+        <div class="info-overlay">Grid Scale: Auto Zoom</div>
     </div>
 
 </div>
 
 <script>
-    const display = document.getElementById('display');
-    const nikeLogo = document.getElementById('nikeLogo');
     const canvas = document.getElementById('graphCanvas');
     const ctx = canvas.getContext('2d');
+    const input = document.getElementById('equation-input');
     const splashScreen = document.getElementById('splash-screen');
-    const mainContainer = document.getElementById('mainContainer');
+
+    // Grid System settings
+    const scale = 40; // Pixels per grid unit
 
     window.onload = () => {
         resizeCanvas();
         
+        // Listen directly to user typing for live updates
+        input.addEventListener('input', drawAll);
+
         setTimeout(() => {
             splashScreen.classList.add('fade-out');
-            mainContainer.classList.add('container-visible');
-            // Re-call canvas sizing once visible to ensure layout fits perfectly
             resizeCanvas();
-            display.focus();
         }, 3000);
     };
 
     function resizeCanvas() {
         canvas.width = canvas.parentElement.clientWidth;
         canvas.height = canvas.parentElement.clientHeight;
-        drawGrid();
+        drawAll();
     }
 
-    function drawGrid() {
+    function drawAll() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const scale = 25; 
+        drawDesmosGrid();
+        plotEquation();
+    }
+
+    // Precise mathematical Desmos grid alignment
+    function drawDesmosGrid() {
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
 
-        ctx.strokeStyle = '#1a1a1a'; 
+        // Subtle dark grid lines
+        ctx.strokeStyle = '#161616';
         ctx.lineWidth = 1;
 
+        // Draw vertical grid lines
         for (let x = centerX; x < canvas.width; x += scale) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
         }
         for (let x = centerX; x > 0; x -= scale) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
         }
+
+        // Draw horizontal grid lines
         for (let y = centerY; y < canvas.height; y += scale) {
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
         }
@@ -298,83 +227,58 @@
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
         }
 
-        ctx.strokeStyle = '#444'; 
+        // Main primary central X and Y intersection axes
+        ctx.strokeStyle = '#444444';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); 
-        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height); 
+        ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); // X Axis
+        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height); // Y Axis
         ctx.stroke();
     }
 
-    function checkLogo() {
-        if (display.value.length > 0) {
-            nikeLogo.classList.add('hidden');
-        } else {
-            nikeLogo.classList.remove('hidden');
-        }
-    }
-
-    function appendValue(val) {
-        display.value += val;
-        checkLogo();
-    }
-
-    function clearDisplay() {
-        display.value = '';
-        checkLogo();
-        drawGrid();
-    }
-
-    function calculate() {
-        try {
-            if (!display.value.includes('x')) {
-                display.value = eval(display.value);
-            } else {
-                plotGraph();
-            }
-            checkLogo();
-        } catch (error) {
-            display.value = 'Error';
-        }
-    }
-
-    function plotGraph() {
-        drawGrid();
-        const expr = display.value;
-        if (!expr) return;
+    // Clean structural equation execution
+    function plotEquation() {
+        const value = input.value.trim();
+        if (!value) return;
 
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const scale = 25; 
 
-        ctx.strokeStyle = '#00ff66'; /* Glowing green path line */
+        ctx.strokeStyle = '#388bfd'; // Official Desmos active glowing blue line
         ctx.lineWidth = 3;
         ctx.beginPath();
 
         let first = true;
 
+        // Sweep horizontally across every screen pixel to build the perfect curve
         for (let pixelX = 0; pixelX < canvas.width; pixelX++) {
+            // Translate screen pixel position into a graph coordinate 'x'
             let x = (pixelX - centerX) / scale;
-            try {
-                let parsedExpr = expr.replace(/(\d)(x)/g, '$1*$2').replace(/x/g, `(${x})`);
-                let y = eval(parsedExpr);
-                let pixelY = centerY - (y * scale);
 
-                if (first) {
-                    ctx.moveTo(pixelX, pixelY);
-                    first = false;
-                } else {
-                    ctx.lineTo(pixelX, pixelY);
+            try {
+                // Use Math.js package engine to compute complex formulas natively
+                let y = math.evaluate(value, { x: x });
+
+                if (typeof y === 'number' && !isNaN(y) && isFinite(y)) {
+                    // Translate math plot coordinate 'y' back into screen view pixels
+                    let pixelY = centerY - (y * scale);
+
+                    if (first) {
+                        ctx.moveTo(pixelX, pixelY);
+                        first = false;
+                    } else {
+                        ctx.lineTo(pixelX, pixelY);
+                    }
                 }
-            } catch (e) {}
+            } catch (err) {
+                // Ignore parse errors dynamically while user is still typing mid-sentence
+            }
         }
         ctx.stroke();
     }
 
-    // Handle resizing if window changes
     window.addEventListener('resize', resizeCanvas);
 </script>
 
 </body>
 </html>
-    
