@@ -3,76 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
+    <title>Brazil National Team Edition Calculator</title>
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #121212;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #009c3b 40%, #ffdf00 100%);
+            font-family: 'Arial Black', Arial, sans-serif;
             margin: 0;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Brand Accents on the sides */
+        .brand-left, .brand-right {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 5rem;
+            font-style: italic;
+            font-weight: 900;
+            user-select: none;
+            letter-spacing: 5px;
+        }
+        .brand-left {
+            left: 5%;
+            transform: rotate(-90deg);
+        }
+        .brand-right {
+            right: 5%;
+            transform: rotate(90deg);
+        }
+
         .calculator {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            background-color: #002244; /* Deep Brazilian Blue */
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            border: 4px solid #ffdf00; /* Yellow Border */
+            width: 320px;
+            z-index: 10;
         }
+
+        .calc-header {
+            text-align: center;
+            color: #ffdf00;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
         #display {
             width: 100%;
-            height: 50px;
-            background-color: #2d2d2d;
-            border: none;
-            color: white;
+            height: 60px;
+            background-color: #111;
+            border: 2px solid #009c3b;
+            color: #fff;
             text-align: right;
-            font-size: 24px;
-            padding: 5px 10px;
+            font-size: 28px;
+            padding: 5px 15px;
             box-sizing: border-box;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
+
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
+
         button {
-            padding: 20px;
-            font-size: 18px;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            background-color: #3d3d3d;
+            border-radius: 10px;
+            background-color: #009c3b; /* Brazilian Green */
             color: white;
+            transition: transform 0.1s, background-color 0.2s;
         }
+
         button:hover {
-            background-color: #555;
+            background-color: #007a2e;
+            transform: scale(1.05);
         }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Yellow Operator Buttons */
         button.operator {
-            background-color: #ff9500;
+            background-color: #ffdf00;
+            color: #002244;
         }
         button.operator:hover {
-            background-color: #e08400;
+            background-color: #e5c700;
         }
+
+        /* Clear Button */
         button.clear {
-            background-color: #af4c4c;
+            background-color: #cc0000;
         }
         button.clear:hover {
-            background-color: #943e3e;
+            background-color: #a30000;
         }
     </style>
 </head>
 <body>
 
+<!-- Brand Style Text Accents -->
+<div class="brand-left">NIKE</div>
+<div class="brand-right">ADIDAS</div>
+
 <div class="calculator">
+    <div class="calc-header">Brasil Edition</div>
     <input type="text" id="display" readonly>
     <div class="buttons">
         <button class="clear" onclick="clearDisplay()">C</button>
-        <button onclick="appendValue('/')">/</button>
-        <button onclick="appendValue('*')">*</button>
-        <button onclick="appendValue('-')">-</button>
+        <button class="operator" onclick="appendValue('/')">/</button>
+        <button class="operator" onclick="appendValue('*')">*</button>
+        <button class="operator" onclick="appendValue('-')">-</button>
         
         <button onclick="appendValue('7')">7</button>
         <button onclick="appendValue('8')">8</button>
