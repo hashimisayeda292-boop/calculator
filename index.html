@@ -3,200 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleek Resell Profit Calculator</title>
+    <title>Brazil Football Edition Calculator</title>
     <style>
         body {
-            background-color: #050505;
+            background-color: #006c35; /* Brasil Deep Green */
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Arial Black', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .calc-card {
-            background-color: #111111;
-            border: 1px solid #222222;
-            border-radius: 16px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-
-        h2 {
-            margin-top: 0;
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            letter-spacing: -0.5px;
-            color: #ffffff;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #888888;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-wrapper {
+            height: 100vh;
+            overflow: hidden;
             position: relative;
-            display: flex;
-            align-items: center;
         }
 
-        .currency-symbol {
+        /* LEFT BRANDING: Nike Swoosh Silhouette via SVG */
+        .brand-left {
             position: absolute;
-            left: 15px;
-            color: #555555;
-            font-weight: 600;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.15;
+            width: 180px;
+            pointer-events: none;
         }
 
-        input, select {
-            width: 100%;
-            background-color: #1a1a1a;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            padding: 14px 14px 14px 30px;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
+        /* RIGHT BRANDING: Adidas 3-Stripes Silhouette via SVG */
+        .brand-right {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-15deg);
+            opacity: 0.15;
+            width: 150px;
+            pointer-events: none;
         }
 
-        select {
-            padding-left: 15px;
-            cursor: pointer;
-            appearance: none;
+        /* Central Calculator Housing */
+        .calc-container {
+            background-color: #004b23; /* Darker stadium green border padding */
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border: 4px solid #ffdf00; /* Brasil Canary Yellow Border */
+            width: 340px;
+            z-index: 10;
         }
 
-        input:focus, select:focus {
-            border-color: #ffffff;
-        }
-
-        .result-box {
-            background-color: #161616;
-            border: 1px dashed #333333;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 25px;
+        .header-title {
             text-align: center;
-        }
-
-        .result-label {
-            font-size: 12px;
-            color: #888888;
-            text-transform: uppercase;
+            color: #ffdf00;
+            font-size: 20px;
             letter-spacing: 1px;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
-        .result-amount {
-            font-size: 36px;
-            font-weight: 800;
-            color: #00ff66; /* Neon profit green */
-            letter-spacing: -1px;
+        /* Modern Digital Display Screen */
+        .screen {
+            background-color: #0b0c10;
+            border: 2px solid #006c35;
+            border-radius: 12px;
+            width: 100%;
+            height: 75px;
+            padding: 15px;
+            box-sizing: border-box;
+            color: #ffdf00;
+            font-size: 32px;
+            text-align: right;
+            margin-bottom: 25px;
+            outline: none;
+            font-family: monospace;
         }
 
-        .fee-breakdown {
-            font-size: 13px;
-            color: #555555;
-            margin-top: 10px;
-            text-align: center;
+        /* Keypad Grid Alignment */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        /* Grid Key Buttons */
+        .btn {
+            background-color: #006c35;
+            border: 2px solid #004b23;
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 18px 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 0px #003619;
+        }
+
+        .btn:hover {
+            background-color: #ffdf00;
+            color: #004b23;
+            border-color: #ffdf00;
+            box-shadow: 0 4px 0px #cca300;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* Specific Special Utility Keys Styling */
+        .btn.clear {
+            background-color: #9e2a2b;
+            box-shadow: 0 4px 0px #6e1d1e;
+            border-color: #6e1d1e;
+        }
+        .btn.clear:hover {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            border-color: #ff4d4d;
+        }
+
+        .btn.operator {
+            color: #ffdf00;
+        }
+
+        .btn.equals {
+            background-color: #ffdf00;
+            color: #004b23;
+            box-shadow: 0 4px 0px #cca300;
+            border-color: #ffdf00;
+        }
+        .btn.equals:hover {
+            background-color: #ffffff;
+            color: #006c35;
+            border-color: #ffffff;
+            box-shadow: 0 4px 0px #b3b3b3;
         }
     </style>
 </head>
 <body>
 
-<div class="calc-card">
-    <h2>RESELL PROFIT CALC</h2>
-    
-    <div class="input-group">
-        <label>Selling Platform</label>
-        <div class="input-wrapper">
-            <select id="platform" onchange="calculateProfit()">
-                <option value="0.1325">eBay (Standard ~13.25%)</option>
-                <option value="0.10">StockX (~10%)</option>
-                <option value="0.05">Goat (~5%)</option>
-                <option value="0.00">Local Cash / Meetup (0%)</option>
-            </select>
+    <svg class="brand-left" viewBox="0 0 24 24" fill="#ffffff">
+        <path d="M21,6.5C17.5,7.5 13,9.5 9,13.5C6.5,16 5.2,18.5 5,20C4.9,20.2 4.6,20.1 4.5,19.8C3.8,17.5 4.5,13.5 7.5,9.5C11,5 16.5,3.2 21.5,3.0C21.8,3.0 21.9,3.3 21.7,3.5C21.5,4.5 21.3,5.5 21,6.5Z"/>
+    </svg>
+
+    <svg class="brand-right" viewBox="0 0 24 24" fill="#ffffff">
+        <rect x="4" y="14" width="3" height="8" rx="0.5"/>
+        <rect x="10" y="8" width="3" height="14" rx="0.5"/>
+        <rect x="16" y="2" width="3" height="20" rx="0.5"/>
+    </svg>
+
+    <div class="calc-container">
+        <div class="header-title">Brasil Edition</div>
+        <input type="text" class="screen" id="display" readonly value="0">
+        
+        <div class="grid">
+            <button class="btn clear" onclick="clearScreen()">C</button>
+            <button class="btn operator" onclick="appendValue('/')">÷</button>
+            <button class="btn operator" onclick="appendValue('*')">×</button>
+            <button class="btn operator" onclick="appendValue('-')">−</button>
+            
+            <button class="btn" onclick="appendValue('7')">7</button>
+            <button class="btn" onclick="appendValue('8')">8</button>
+            <button class="btn" onclick="appendValue('9')">9</button>
+            <button class="btn operator" onclick="appendValue('+')">+</button>
+            
+            <button class="btn" onclick="appendValue('4')">4</button>
+            <button class="btn" onclick="appendValue('5')">5</button>
+            <button class="btn" onclick="appendValue('6')">6</button>
+            <button class="btn equals" onclick="calculate()" style="grid-row: span 2; height: 100%;">=</button>
+            
+            <button class="btn" onclick="appendValue('1')">1</button>
+            <button class="btn" onclick="appendValue('2')">2</button>
+            <button class="btn" onclick="appendValue('3')">3</button>
+            
+            <button class="btn" onclick="appendValue('0')" style="grid-column: span 2;">0</button>
+            <button class="btn" onclick="appendValue('.')">.</button>
         </div>
     </div>
-
-    <div class="input-group">
-        <label>Sold Price</label>
-        <div class="input-wrapper">
-            <span class="currency-symbol">$</span>
-            <input type="number" id="soldPrice" placeholder="0.00" oninput="calculateProfit()">
-        </div>
-    </div>
-
-    <div class="input-group">
-        <label>Item Cost (What you paid)</label>
-        <div class="input-wrapper">
-            <span class="currency-symbol">$</span>
-            <input type="number" id="itemCost" placeholder="0.00" oninput="calculateProfit()">
-        </div>
-    </div>
-
-    <div class="input-group">
-        <label>Shipping Cost / Fees</label>
-        <div class="input-wrapper">
-            <span class="currency-symbol">$</span>
-            <input type="number" id="shipping" placeholder="0.00" oninput="calculateProfit()">
-        </div>
-    </div>
-
-    <div class="result-box">
-        <div class="result-label">Net Net Profit</div>
-        <div class="result-amount" id="profitDisplay">$0.00</div>
-        <div class="fee-breakdown" id="feeDisplay">Platform Fees: $0.00</div>
-    </div>
-</div>
 
 <script>
-    function calculateProfit() {
-        const platformRate = parseFloat(document.getElementById('platform').value);
-        const soldPrice = parseFloat(document.getElementById('soldPrice').value) || 0;
-        const itemCost = parseFloat(document.getElementById('itemCost').value) || 0;
-        const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+    const display = document.getElementById('display');
+    let currentInput = '';
 
-        // Calculate the marketplace slice
-        let fees = soldPrice * platformRate;
-        if (platformRate > 0 && platformRate !== 0.1325) {
-            fees += 5; // Standard flat transaction fees for sneaker apps
-        } else if (platformRate === 0.1325) {
-            fees += 0.30; // eBay flat per-order fee
-        }
-
-        // Net math formula
-        const totalProfit = soldPrice - itemCost - shipping - fees;
-
-        // Update numbers on screen
-        const profitDisplay = document.getElementById('profitDisplay');
-        const feeDisplay = document.getElementById('feeDisplay');
-
-        feeDisplay.innerText = "Platform Fees: $" + fees.toFixed(2);
-        profitDisplay.innerText = "$" + totalProfit.toFixed(2);
-
-        // Turn red if losing money, green if in the green!
-        if (totalProfit < 0) {
-            profitDisplay.style.color = "#ff3333";
+    function appendValue(val) {
+        if (display.value === '0' && !isNaN(val)) {
+            currentInput = val;
         } else {
-            profitDisplay.style.color = "#00ff66";
+            currentInput += val;
+        }
+        display.value = currentInput;
+    }
+
+    function clearScreen() {
+        currentInput = '';
+        display.value = '0';
+    }
+
+    function calculate() {
+        try {
+            // Evaluates mathematical operations securely 
+            if (currentInput === '') return;
+            const result = eval(currentInput);
+            display.value = Number(result.toFixed(4)); // Keeps decimals clean if they happen
+            currentInput = display.value;
+        } catch (error) {
+            display.value = 'Error';
+            currentInput = '';
         }
     }
 </script>
