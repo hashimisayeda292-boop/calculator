@@ -3,289 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desmos Dark Edition</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <title>Sleek Resell Profit Calculator</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background-color: #000000;
+            background-color: #050505;
             color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Top Header Bar */
-        .header-bar {
-            height: 45px;
-            background-color: #111111;
-            border-bottom: 1px solid #2d2d2d;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            font-size: 16px;
-        }
-
-        /* Main App Workspace (Split Left/Right) */
-        .workspace {
-            display: flex;
-            flex: 1;
-            position: relative;
-            /* Leaves room for the bottom keypad */
-            height: calc(100vh - 265px); 
-        }
-
-        /* Left Sidebar for Equation Input Rows */
-        .sidebar {
-            width: 320px;
-            background-color: #141414;
-            border-right: 1px solid #2d2d2d;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-
-        .input-row {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #2d2d2d;
-            padding: 15px;
-            background-color: #111111;
-        }
-
-        .expression-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: #388bfd; /* Desmos line indicator */
-            margin-right: 12px;
-        }
-
-        #equation-input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 18px;
-            font-family: sans-serif;
-            outline: none;
-        }
-
-        /* Right Side Math Grid */
-        .graph-area {
-            flex: 1;
-            background-color: #0a0a0a;
-            position: relative;
-        }
-
-        #graphCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* BOTTOM DESMOS KEYPAD PANEL */
-        .keypad-container {
-            height: 220px;
-            background-color: #1a1a1a;
-            border-top: 1px solid #2d2d2d;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr) repeat(4, 1.2fr) repeat(2, 1fr);
-            gap: 6px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .key {
-            background-color: #262626;
-            border: none;
-            border-radius: 5px;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.15s;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
 
-        .key:hover {
-            background-color: #333333;
+        .calc-card {
+            background-color: #111111;
+            border: 1px solid #222222;
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
-        /* Number keys matching gray styling */
-        .key.number {
-            background-color: #333333;
-        }
-        .key.number:hover {
-            background-color: #444444;
+        h2 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
-        /* Action keys like Enter or Delete */
-        .key.action {
-            background-color: #388bfd;
-            font-weight: bold;
+        .input-group {
+            margin-bottom: 20px;
         }
-        .key.action:hover {
-            background-color: #4a9eff;
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #888888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 15px;
+            color: #555555;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 14px 14px 14px 30px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select {
+            padding-left: 15px;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #ffffff;
+        }
+
+        .result-box {
+            background-color: #161616;
+            border: 1px dashed #333333;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .result-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: #00ff66; /* Neon profit green */
+            letter-spacing: -1px;
+        }
+
+        .fee-breakdown {
+            font-size: 13px;
+            color: #555555;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="header-bar">
-    <span>desmos</span> <span style="color: #666; font-weight: normal; margin-left: 8px;">| Dark Edition</span>
-</div>
-
-<div class="workspace">
-    <div class="sidebar">
-        <div class="input-row">
-            <div class="expression-color"></div>
-            <input type="text" id="equation-input" placeholder="y = x" autocomplete="off" autofocus>
+<div class="calc-card">
+    <h2>RESELL PROFIT CALC</h2>
+    
+    <div class="input-group">
+        <label>Selling Platform</label>
+        <div class="input-wrapper">
+            <select id="platform" onchange="calculateProfit()">
+                <option value="0.1325">eBay (Standard ~13.25%)</option>
+                <option value="0.10">StockX (~10%)</option>
+                <option value="0.05">Goat (~5%)</option>
+                <option value="0.00">Local Cash / Meetup (0%)</option>
+            </select>
         </div>
     </div>
 
-    <div class="graph-area">
-        <canvas id="graphCanvas"></canvas>
+    <div class="input-group">
+        <label>Sold Price</label>
+        <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="soldPrice" placeholder="0.00" oninput="calculateProfit()">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>Item Cost (What you paid)</label>
+        <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="itemCost" placeholder="0.00" oninput="calculateProfit()">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>Shipping Cost / Fees</label>
+        <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="shipping" placeholder="0.00" oninput="calculateProfit()">
+        </div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-label">Net Net Profit</div>
+        <div class="result-amount" id="profitDisplay">$0.00</div>
+        <div class="fee-breakdown" id="feeDisplay">Platform Fees: $0.00</div>
     </div>
 </div>
 
-<div class="keypad-container">
-    <button class="key" onclick="press('x')">x</button>
-    <button class="key" onclick="press('y')">y</button>
-    <button class="key number" onclick="press('7')">7</button>
-    <button class="key number" onclick="press('8')">8</button>
-    <button class="key number" onclick="press('9')">9</button>
-    <button class="key" onclick="press('/')">÷</button>
-    
-    <button class="key" onclick="press('(')">(</button>
-    <button class="key" onclick="press(')')">)</button>
-    <button class="key number" onclick="press('4')">4</button>
-    <button class="key number" onclick="press('5')">5</button>
-    <button class="key number" onclick="press('6')">6</button>
-    <button class="key" onclick="press('*')">×</button>
-    
-    <button class="key" onclick="press('^2')">a²</button>
-    <button class="key" onclick="press('^')">a^b</button>
-    <button class="key number" onclick="press('1')">1</button>
-    <button class="key number" onclick="press('2')">2</button>
-    <button class="key number" onclick="press('3')">3</button>
-    <button class="key" onclick="press('-')">−</button>
-    
-    <button class="key" onclick="clearInput()">C</button>
-    <button class="key" onclick="press('pi')">π</button>
-    <button class="key number" onclick="press('0')">0</button>
-    <button class="key number" onclick="press('.')">.</button>
-    <button class="key action" onclick="drawAll()" style="grid-column: span 2;">Graph ↵</button>
-</div>
-
 <script>
-    const canvas = document.getElementById('graphCanvas');
-    const ctx = canvas.getContext('2d');
-    const input = document.getElementById('equation-input');
-    const scale = 35; 
+    function calculateProfit() {
+        const platformRate = parseFloat(document.getElementById('platform').value);
+        const soldPrice = parseFloat(document.getElementById('soldPrice').value) || 0;
+        const itemCost = parseFloat(document.getElementById('itemCost').value) || 0;
+        const shipping = parseFloat(document.getElementById('shipping').value) || 0;
 
-    window.onload = () => {
-        resizeCanvas();
-        input.addEventListener('input', drawAll);
-    };
-
-    function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
-        drawAll();
-    }
-
-    function drawAll() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawGrid();
-        plotEquation();
-    }
-
-    function drawGrid() {
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-
-        ctx.strokeStyle = '#222222';
-        ctx.lineWidth = 1;
-
-        for (let x = centerX; x < canvas.width; x += scale) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let x = centerX; x > 0; x -= scale) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let y = centerY; y < canvas.height; y += scale) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
-        for (let y = centerY; y > 0; y -= scale) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        // Calculate the marketplace slice
+        let fees = soldPrice * platformRate;
+        if (platformRate > 0 && platformRate !== 0.1325) {
+            fees += 5; // Standard flat transaction fees for sneaker apps
+        } else if (platformRate === 0.1325) {
+            fees += 0.30; // eBay flat per-order fee
         }
 
-        ctx.strokeStyle = '#555555';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY);
-        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height);
-        ctx.stroke();
-    }
+        // Net math formula
+        const totalProfit = soldPrice - itemCost - shipping - fees;
 
-    function plotEquation() {
-        let value = input.value.trim();
-        if (!value) return;
+        // Update numbers on screen
+        const profitDisplay = document.getElementById('profitDisplay');
+        const feeDisplay = document.getElementById('feeDisplay');
 
-        // Clean out prefix if typed like y = x
-        if (value.toLowerCase().startsWith('y=')) {
-            value = value.substring(2);
-        } else if (value.toLowerCase().startsWith('y =')) {
-            value = value.substring(3);
+        feeDisplay.innerText = "Platform Fees: $" + fees.toFixed(2);
+        profitDisplay.innerText = "$" + totalProfit.toFixed(2);
+
+        // Turn red if losing money, green if in the green!
+        if (totalProfit < 0) {
+            profitDisplay.style.color = "#ff3333";
+        } else {
+            profitDisplay.style.color = "#00ff66";
         }
-
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-
-        ctx.strokeStyle = '#388bfd';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-
-        let first = true;
-
-        for (let pixelX = 0; pixelX < canvas.width; pixelX++) {
-            let x = (pixelX - centerX) / scale;
-            try {
-                let y = math.evaluate(value, { x: x });
-                if (typeof y === 'number' && !isNaN(y) && isFinite(y)) {
-                    let pixelY = centerY - (y * scale);
-                    if (first) {
-                        ctx.moveTo(pixelX, pixelY);
-                        first = false;
-                    } else {
-                        ctx.lineTo(pixelX, pixelY);
-                    }
-                }
-            } catch (err) {}
-        }
-        ctx.stroke();
     }
-
-    function press(chars) {
-        input.value += chars;
-        drawAll();
-        input.focus();
-    }
-
-    function clearInput() {
-        input.value = '';
-        drawAll();
-        input.focus();
-    }
-
-    window.addEventListener('resize', resizeCanvas);
 </script>
 
 </body>
